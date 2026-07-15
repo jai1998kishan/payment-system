@@ -9,6 +9,8 @@ import cookieParser from "cookie-parser";
 import { notFound } from "./middlewares/notFound.middleware.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
 
+import routes from "./routes/index.js";
+
 const app = express();
 app.use(helmet());
 app.use(morgan("dev"));
@@ -23,18 +25,19 @@ app.use(
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 app.use(cookieParser());
 
+app.get("/", (req, res) => {
+  res.json({
+    message: "API Running",
+  });
+});
+
 // Routes will come here
+app.use("/api/v1", routes);
 
 // 404 middleware
 app.use(notFound);
 
 // Global Error middleware
 app.use(errorHandler);
-
-app.get("/", (req, res) => {
-  res.json({
-    message: "API Running",
-  });
-});
 
 export default app;
