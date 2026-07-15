@@ -122,3 +122,54 @@ File upload
 A custom error class keeps error handling consistent and avoids repeating statusCode assignments.
 
 We're postponing it until now because I wanted you to first understand the basic error flow.
+
+===================================================
+
+Senior Note #9 — Layers
+
+Let's define our project architecture now.
+
+Route
+│
+▼
+Validation
+│
+▼
+Controller
+│
+▼
+Service
+│
+▼
+Repository (Later)
+│
+▼
+MongoDB
+
+And when data comes back:
+
+MongoDB
+
+↓
+
+Repository
+
+↓
+
+Service
+
+↓
+
+Mapper (DTO)
+
+↓
+
+Controller
+
+↓
+
+Response
+
+We're not introducing a Repository yet because it would be unnecessary complexity at this stage.
+
+We'll add it only if we reach a point where it provides clear value.

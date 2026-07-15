@@ -1,3 +1,4 @@
+import { toUserResponse } from "./mappers/user.mapper.js";
 import { User } from "./user.model.js";
 
 export const signupService = async ({ name, email, password }) => {
@@ -16,9 +17,5 @@ export const signupService = async ({ name, email, password }) => {
     password,
   });
 
-  return {
-    id: user._id,
-    name: user.name,
-    email: user.email,
-  };
+  return toUserResponse(user);
 };
