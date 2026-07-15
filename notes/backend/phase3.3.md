@@ -612,3 +612,10 @@ Login API Brute force Rate limiter
 User Account Email enumeration Generic error messages
 
 This is a simplified version of how many security-focused teams think about application design. It helps you connect every security decision to the specific problem it's meant to solve.
+
+| Storage         | JavaScript Can Read? | Automatically Sent with Requests? |
+| --------------- | -------------------- | --------------------------------- |
+| localStorage    | ✅ Yes               | ❌ No                             |
+| sessionStorage  | ✅ Yes               | ❌ No                             |
+| Normal Cookie   | ✅ Yes               | ✅ Yes                            |
+| HttpOnly Cookie | ❌ No                | ✅ Yes                            |
