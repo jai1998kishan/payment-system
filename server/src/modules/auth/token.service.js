@@ -1,7 +1,7 @@
 import { env } from "../../config/env.js";
 import { signToken } from "../../utils/jwt.js";
 
-export const generateAccessToken = (user) => {
+export const generateAccessToken = ({ sub, role }) => {
   return signToken({
     payload: {
       sub: user._id.toString(),
@@ -12,7 +12,7 @@ export const generateAccessToken = (user) => {
   });
 };
 
-export const generateRefreshToken = (user) => {
+export const generateRefreshToken = ({ sub }) => {
   return signToken({
     payload: {
       sub: user._id.toString(),

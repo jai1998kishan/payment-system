@@ -173,3 +173,15 @@ Response
 We're not introducing a Repository yet because it would be unnecessary complexity at this stage.
 
 We'll add it only if we reach a point where it provides clear value.
+
+==================================================
+
+Senior Rule #11
+
+Sensitive data should be hidden by default.
+
+Never depend on developers remembering not to return it.
+
+Let the schema protect you.
+
+=================================================
