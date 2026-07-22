@@ -185,3 +185,49 @@ Never depend on developers remembering not to return it.
 Let the schema protect you.
 
 =================================================
+
+Let's Understand Every Option
+httpOnly
+httpOnly: true
+
+JavaScript cannot read the cookie.
+
+Protects against many XSS attacks.
+
+secure
+secure: true
+
+Cookie is only sent over HTTPS.
+
+During development:
+
+env.NODE_ENV === "development"
+
+it becomes:
+
+false
+
+Otherwise your browser won't send cookies over http://localhost.
+
+sameSite
+sameSite: "strict"
+
+Protects against CSRF.
+
+The browser won't automatically include the cookie on cross-site requests in most cases.
+
+Later we'll discuss "lax" vs "strict" vs "none" in detail.
+
+maxAge
+
+Browser automatically expires the cookie.
+
+Notice something important:
+
+The cookie lifetime should match the JWT lifetime.
+
+If your JWT expires in 15 minutes, don't keep the cookie for 30 days.
+
+Keep them aligned.
+
+==============================================
