@@ -1,4 +1,4 @@
-import { signupService } from "./auth.service.js";
+import { refreshAccessTokenService, signupService } from "./auth.service.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import { loginService } from "./auth.service.js";
@@ -23,4 +23,18 @@ export const login = asyncHandler(async (req, res) => {
   res.cookie("refreshToken", refreshToken, refreshCookieOptions);
 
   return res.status(200).json(new ApiResponse(200, "Login successful", user));
+});
+
+export const refreshAccessToken = asyncHandler(async (req, res) => {
+  const refreshToken = req.cookies?.refreshToken;
+
+  if (!refreshToken) {
+    throw new ApiResponse(401, "Authentication required");
+  }
+
+  const { accessToken } = await refreshAccessTokenService(refreshToken);
+
+  res.cookie("accessToken", accessToken, accessCookieOptions);
+
+  return res.status(200).json(new ApiResponse(200, "Access token refreshed"));
 });

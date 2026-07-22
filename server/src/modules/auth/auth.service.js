@@ -3,6 +3,8 @@ import { User } from "./user.model.js";
 import { generateAccessToken, generateRefreshToken } from "./token.service.js";
 import { hashToken } from "../../utils/crypto.js";
 import { ApiError } from "../../utils/ApiError.js";
+import { verifyToken } from "../../utils/jwt.js";
+import { env } from "../../config/env.js";
 
 export const signupService = async ({ name, email, password }) => {
   const existingUser = await User.findOne({ email });
@@ -57,5 +59,32 @@ export const loginService = async ({ email, password }) => {
     user: toUserResponse(user),
     accessToken,
     refreshToken,
+  };
+};
+
+export const refreshAccessTokenService = async (refreshToken) => {
+  const payload = verifyToken({
+    token: refreshToken,
+    secret: env.JWT_REFRESH_SECRET,
+  });
+
+  const hashedToken = hashToken(refreshToken);
+
+  const user = await User.findById(payload.sub);
+
+  if (!user) {
+    throw new ApiError(401, "Authentication required");
+  }
+
+  if (user.refreshToken !== hashToken) {
+    throw new ApiError(401, "Authentication required");
+  }
+
+  const accessToken = generateAccessToken({
+    sub: user._id.toString(),
+  });
+
+  return {
+    accessToken,
   };
 };
