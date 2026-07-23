@@ -13,3 +13,9 @@ export const refreshCookieOptions = {
   samesite: "strict",
   maxAge: 7 * 24 * 60 * 1000,
 };
+
+export const clearCookieOptions = {
+  httpOnly: true,
+  secure: env.NODE_ENV === "production",
+  sameSite: "strict",
+};

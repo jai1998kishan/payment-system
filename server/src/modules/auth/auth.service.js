@@ -88,3 +88,15 @@ export const refreshAccessTokenService = async (refreshToken) => {
     accessToken,
   };
 };
+
+export const logoutService = async (userId) => {
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  user.refreshToken = undefined;
+
+  await user.save();
+};
