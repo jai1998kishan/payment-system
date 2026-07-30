@@ -2,7 +2,7 @@ import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 
 import { randomUUID } from "crypto";
 
-import { r2 } from "../../lib/cloudflare-r2";
+import { r2 } from "../../lib/cloudflare-r2.js";
 
 import { env } from "../../config/env.js";
 
