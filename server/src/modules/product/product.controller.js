@@ -1,0 +1,14 @@
+import { asyncHandler } from "../../utils/asyncHandler.js";
+import { ApiResponse } from "../../utils/ApiResponse.js";
+
+export const createProduct = asyncHandler(async (req, res) => {
+  const product = await createProductService({
+    body: req.body,
+    files: req.files,
+    user: req.user,
+  });
+
+  return res
+    .status(201)
+    .json(new ApiResponse(201, "Product create successfully", product));
+});

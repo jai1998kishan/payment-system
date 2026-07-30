@@ -1,4 +1,21 @@
 import mongoose from "mongoose";
+import { type } from "os";
+
+const imageSchema = new mongoose.Schema(
+  {
+    url: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    key: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+  },
+  { _id: false },
+);
 
 const productSchema = new mongoose.Schema(
   {
@@ -41,25 +58,35 @@ const productSchema = new mongoose.Schema(
       default: 0,
     },
 
-    image: [
-      {
-        url: {
-          type: String,
-          required: true,
-          trim: true,
-        },
-        key: {
-          type: String,
-          required: true,
-          trim: true,
-        },
-      },
-    ],
+    image: {
+      type: [imageSchema],
+      default: [],
+    },
 
     isActive: {
       type: Boolean,
       default: true,
     },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    updatedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
+    deletedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
   },
   { timestamps: true },
 );
+
+export const Product = mongoose.model("Product", productSchema);
