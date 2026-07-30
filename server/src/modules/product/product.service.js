@@ -55,3 +55,5 @@ export const createProductService = async ({ body, files, user }) => {
     images: product.images,
   };
 };
+
+export const getProductsService = async () => {};
