@@ -57,8 +57,12 @@ export const createProductService = async ({ body, files, user }) => {
   };
 };
 
-export const getProductsService = async () => {
-  const products = await Product.aggregate([
+export const getProductsService = async ({ page = 1, limit = 10 }) => {
+  const safeLimit = Math.min(limit, 50);
+
+  const skip = (page - 1) * safeLimit;
+
+  const result = await Product.aggregate([
     {
       $match: {
         isActive: true,
@@ -66,16 +70,57 @@ export const getProductsService = async () => {
       },
     },
     {
-      $project: {
-        _id: 0,
-        id: "$_id",
-        name: 1,
-        price: 1,
+      $facet: {
+        products: [
+          {
+            $sort: {
+              createdAt: -1,
+              _id: -1,
+            },
+          },
+          {
+            $skip: skip,
+          },
+          {
+            $limit: safeLimit,
+          },
+          {
+            $project: {
+              _id: 0,
+              id: "$_id",
+              name: 1,
+              price: 1,
+              discountPrice: 1,
+              image: {
+                $arrayElemAt: ["$images", 0],
+              },
+            },
+          },
+        ],
 
-        image: {
-          $arrayElemAt: ["$images", 0],
-        },
+        totalCount: [
+          {
+            $count: "count",
+          },
+        ],
       },
     },
   ]);
+
+  const products = result[0].products;
+  const totalItems = result[0].totalCount[0]?.count ?? 0;
+
+  const totalPages = Math.ceil(totalItems / safeLimit);
+
+  return {
+    products,
+    pagination: {
+      page,
+      limit: safeLimit,
+      totalItems,
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1,
+    },
+  };
 };
