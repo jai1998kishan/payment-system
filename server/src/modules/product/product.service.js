@@ -57,17 +57,26 @@ export const createProductService = async ({ body, files, user }) => {
   };
 };
 
-export const getProductsService = async ({ page = 1, limit = 10 }) => {
+export const getProductsService = async ({ page = 1, limit = 10, search }) => {
   const safeLimit = Math.min(limit, 50);
 
   const skip = (page - 1) * safeLimit;
 
+  const matchStage = {
+    isActive: true,
+    deletedAt: null,
+  };
+
+  if (search) {
+    matchStage.name = {
+      $regex: search, // "MacBook".includes("Mac")
+      $options: "i", // case insensitive
+    };
+  }
+
   const result = await Product.aggregate([
     {
-      $match: {
-        isActive: true,
-        deletedAt: null,
-      },
+      $match: matchStage,
     },
     {
       $facet: {
