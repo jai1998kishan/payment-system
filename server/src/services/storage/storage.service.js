@@ -11,6 +11,7 @@ const generateKey = (folder, extension) => {
 };
 
 export const uploadImage = async (file, folder = "products") => {
+  console.log("i'm in upload image.");
   const extension = file.mimetype.split("/")[1];
 
   const key = generateKey(folder, extension);
@@ -39,6 +40,7 @@ export const deleteImage = async (key) => {
 };
 
 export const uploadImages = async (files, folder = "products") => {
+  console.log("i'm in upload images serivcie...");
   const uploadedImages = [];
 
   try {

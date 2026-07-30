@@ -25,6 +25,7 @@ export const createProductService = async ({ body, files, user }) => {
   }
 
   const images = await uploadImages(files);
+  console.log("imagess...", images);
 
   let product;
 
