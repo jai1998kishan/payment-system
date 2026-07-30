@@ -56,4 +56,25 @@ export const createProductService = async ({ body, files, user }) => {
   };
 };
 
-export const getProductsService = async () => {};
+export const getProductsService = async () => {
+  const products = await Product.aggregate([
+    {
+      $match: {
+        isActive: true,
+        deletedAt: null,
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        id: "$_id",
+        name: 1,
+        price: 1,
+
+        image: {
+          $arrayElemAt: ["$images", 0],
+        },
+      },
+    },
+  ]);
+};
