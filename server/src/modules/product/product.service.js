@@ -57,7 +57,13 @@ export const createProductService = async ({ body, files, user }) => {
   };
 };
 
-export const getProductsService = async ({ page = 1, limit = 10, search }) => {
+export const getProductsService = async ({
+  page = 1,
+  limit = 10,
+  search,
+  minPrice,
+  maxPrice,
+}) => {
   const safeLimit = Math.min(limit, 50);
 
   const skip = (page - 1) * safeLimit;
@@ -68,10 +74,32 @@ export const getProductsService = async ({ page = 1, limit = 10, search }) => {
   };
 
   if (search) {
-    matchStage.name = {
-      $regex: search, // "MacBook".includes("Mac")
-      $options: "i", // case insensitive
-    };
+    matchStage.$or = [
+      {
+        name: {
+          $regex: search,
+          $options: "i",
+        },
+      },
+      {
+        description: {
+          $regex: search,
+          $options: "i",
+        },
+      },
+    ];
+  }
+
+  if (minPrice || maxPrice) {
+    matchStage.price = {};
+  }
+
+  if (minPrice) {
+    matchStage.price.$gte = minPrice;
+  }
+
+  if (maxPrice) {
+    matchStage.price.$lte = maxPrice;
   }
 
   const result = await Product.aggregate([
