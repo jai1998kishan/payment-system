@@ -63,6 +63,9 @@ export const getProductsService = async ({
   search,
   minPrice,
   maxPrice,
+  sortBy = "createdAt",
+  order = "desc",
+  category,
 }) => {
   const safeLimit = Math.min(limit, 50);
 
@@ -73,12 +76,21 @@ export const getProductsService = async ({
     deletedAt: null,
   };
 
+  const allowedSortFields = ["price", "createdAt", "name"];
+  if (!allowedSortFields.includes(sortBy)) {
+    sortBy = "createdAt";
+  }
+
+  const sortStage = {};
+
+  sortStage[sortBy] = order === "asc" ? 1 : -1;
+
   if (search) {
     matchStage.$or = [
       {
         name: {
           $regex: search,
-          $options: "i",
+          $options: "i", //$options: "i" flag makes the regular expression case-insensitive.
         },
       },
       {
@@ -88,6 +100,10 @@ export const getProductsService = async ({
         },
       },
     ];
+  }
+
+  if (category) {
+    matchStage.categorySlug = category;
   }
 
   if (minPrice || maxPrice) {
@@ -110,10 +126,7 @@ export const getProductsService = async ({
       $facet: {
         products: [
           {
-            $sort: {
-              createdAt: -1,
-              _id: -1,
-            },
+            $sort: sortStage,
           },
           {
             $skip: skip,
