@@ -23,6 +23,12 @@ export const getProductsSchema = z
     minPrice: z.coerce.number().min(0).optional(),
 
     maxPrice: z.coerce.number().min(0).optional(),
+
+    sortBy: z.enum(["price", "createdAt", "name"]).default("createdAt"),
+
+    order: z.enum(["asc", "desc"]).default("desc"),
+
+    category: z.string().trim().min(1).max(100).optional(),
   })
   .refine(
     (data) => {

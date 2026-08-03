@@ -76,11 +76,6 @@ export const getProductsService = async ({
     deletedAt: null,
   };
 
-  const allowedSortFields = ["price", "createdAt", "name"];
-  if (!allowedSortFields.includes(sortBy)) {
-    sortBy = "createdAt";
-  }
-
   const sortStage = {};
 
   sortStage[sortBy] = order === "asc" ? 1 : -1;

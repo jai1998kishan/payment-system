@@ -9,7 +9,15 @@ export const validate = (schema, target = "body") => {
       });
     }
 
-    req[target] = result.data;
+    // Create it only once
+    req.validated ??= {
+      body: {},
+      query: {},
+      params: {},
+    };
+
+    // Store the validated data
+    req.validated[target] = result.data;
 
     next();
   };
