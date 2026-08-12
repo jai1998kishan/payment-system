@@ -5,3 +5,7 @@ export const addToCartSchema = z.object({
 
   quantity: z.coerce.number().int().min(1).max(50),
 });
+
+export const updateCartItemSchema = z.object({
+  quantity: z.coerce.number().int().min(1).max(50),
+});

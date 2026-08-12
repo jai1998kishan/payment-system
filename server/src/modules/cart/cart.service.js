@@ -201,3 +201,67 @@ export const getCartService = async (userId) => {
     }
   );
 };
+
+export const updateCartItemService = async ({
+  userId,
+  productId,
+  quantity,
+}) => {
+  const product = await Product.findOne({
+    _id: productId,
+    isActive: true,
+    deletedAt: null,
+  }).select("_id stock");
+
+  if (!product) {
+    throw new ApiError(404, "Product not found");
+  }
+
+  if (quantity > product.stock) {
+    throw new ApiError(400, "Requested quantity exceeds available stock");
+  }
+
+  const cart = await Cart.findOne({
+    user: userId,
+  });
+
+  if (!cart) {
+    throw new ApiError(404, "Cart not found");
+  }
+
+  const item = cart.items.find((item) => item.product.toString() === productId);
+
+  if (!item) {
+    throw new ApiError(404, "Product not found in cart");
+  }
+
+  item.quantity = quantity;
+
+  await cart.save();
+
+  return cart;
+};
+
+export const removeCartItemService = async ({ userId, productId }) => {
+  const cart = await Cart.findOne({
+    user: userId,
+  });
+
+  if (!cart) {
+    throw new ApiError(404, "Cart not found");
+  }
+
+  const originalLength = cart.items.length;
+
+  cart.items = cart.items.filter(
+    (item) => item.product.toString() !== productId,
+  );
+
+  if (cart.items.length === originalLength) {
+    throw new ApiError(404, "Product not found in cart");
+  }
+
+  await cart.save();
+
+  return cart;
+};
