@@ -106,8 +106,27 @@ export const getCartService = async (userId) => {
 
     {
       $addFields: {
+        isAvailable: {
+          $and: [
+            "$product.isActive",
+            {
+              $eq: ["$product.deletedAt", null],
+            },
+            {
+              $gt: ["$product.stock", 0],
+            },
+            {
+              $gte: ["$product.stock", "$items.quantity"],
+            },
+          ],
+        },
+      },
+    },
+
+    {
+      $addFields: {
         itemTotal: {
-          $multiply: ["$product.price", "$otems.quantity"],
+          $multiply: ["$product.price", "$items.quantity"],
         },
       },
     },
@@ -155,11 +174,14 @@ export const getCartService = async (userId) => {
             quantity: "$items.quantity",
             effectivePrice: "$effectivePrice",
             itemTotal: "$itemTotal",
+            isAvailable: "$isAvailable",
           },
         },
 
         subtotal: {
-          $sum: "$itemTotal",
+          $sum: {
+            $cond: ["$isAvailable", "$itemTotal", 0],
+          },
         },
       },
     },
@@ -185,6 +207,7 @@ export const getCartService = async (userId) => {
               quantity: "$$item.quantity",
               effectivePrice: "$$item.effectivePrice",
               itemTotal: "$$item.itemTotal",
+              isAvailable: "$$item.isAvailable",
             },
           },
         },
