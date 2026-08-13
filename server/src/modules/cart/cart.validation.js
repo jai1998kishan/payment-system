@@ -1,8 +1,7 @@
 import { z } from "zod";
 
 export const addToCartSchema = z.object({
-  productId: z.string().trim().min(1),
-
+  productId: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid product ID"),
   quantity: z.coerce.number().int().min(1).max(50),
 });
 
